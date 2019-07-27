@@ -31,9 +31,12 @@ submit(e){
 e.preventDefault;
 
 console.log('In Submit');
-axios.post('http://localhost:3000/auth/signIn',{username:this.state.username,password:this.state.password})
-.then(res=>
-    localStorage.setItem('cool-jwt',res.data));
+axios.post('http://localhost:3000/auth/signIn',{username:this.state.username,password:this.state.password}).then((res)=>{
+   
+      localStorage.setItem('cool-jwt',res.data);
+//this.props.history.push('/Protected');
+}).then(()=>{ this.props.history.push('/Protected');
+});
 
 }
 
