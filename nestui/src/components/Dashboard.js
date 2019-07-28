@@ -1,12 +1,12 @@
 import React from 'react';
 
-const Protected=()=>{
+const Dashboard=()=>{
 
     return (<div>
         <h1>
-            I am Protected
+            I am Dashboard
         </h1>
     </div>);
 };
 
-export default Protected;
+export default Dashboard;

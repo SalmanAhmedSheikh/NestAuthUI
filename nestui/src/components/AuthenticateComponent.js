@@ -1,47 +1,63 @@
-import React,{Component} from 'react';
+import React, { Component } from 'react';
 import axios from 'axios';
-import {withRouter} from  'react-router-dom'
+import { withRouter } from 'react-router-dom'
 
-class AuthenticateComponet extends Component{
-constructor(props){
-    super(props);
+class AuthenticateComponet extends Component {
+    constructor(props) {
+        super(props);
 
-    this.state={
-        user:undefined
+        this.state = {
+            user: undefined
+        };
     }
-}
 
-componentDidMount(){
-    
-    console.log('In Component did Mount');
-    const jwt=localStorage.getItem('cool-jwt');
+    componentDidMount() {
 
-    console.log('jwt',jwt);
+        // console.log('In Component did Mount');
+        const jwt = localStorage.getItem('cool-jwt');
 
-if(!jwt)
-{
-    this.props.history.push('/login');
-}
+        // console.log('jwt is here',jwt);
 
-axios.post('http://localhost:3000/auth/getUser',{headers:{Authorization:`Bearer ${jwt}`}}).then(res=>this.setState({user:res.data}))
-.catch(err=>{
-//localStorage.removeItem('cool-jwt');
-    this.props.history.push('/login');
-});
-}
+        if (!jwt) {
+            console.log('I am in !jwt');
+            this.props.history.push('/login');
 
-render(){
-    if(this.state.user===undefined)
-    {
-        return (<div><h1>Loading.....</h1></div>);
+        }
+        else {
+            console.log('In else ');
+            axios.post('http://localhost:5000/auth/getUser', {}, { headers: { 'authorization': `bearer ${jwt}` } })
+                .then(
+                    (res) => {
+                        console.log('before res.data', res.data);
+                        this.setState({ user: res.data });
+                        console.log('After res.data', res.data);
+
+                    })
+                .catch((err) => {
+                    console.log('err', err);
+                    localStorage.removeItem('cool-jwt');
+                    this.props.history.push('/login');
+                });
+        }
     }
-return (
-    <div>
-        {this.props.children}
-    </div>
-)
 
-}
+
+    render() {
+         console.log('In render');
+        // console.log('this.state',this.state);
+
+        // console.log('this.state.user',this.state.user);
+
+        if (this.state.user === undefined) {
+            return (<div><h1>Loading.....</h1></div>);
+        }
+        return (
+            <div>
+                {this.props.children}
+            </div>
+        )
+
+    }
 
 }
 

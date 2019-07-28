@@ -3,16 +3,17 @@ import { BrowserRouter,Switch,Route} from 'react-router-dom';
 import Home from './Home';
 import AuthenticateComponet from './AuthenticateComponent';
 import Login from './login';
-import Protected from './Protected';
+import Dashboard from './Dashboard';
 
 function App() {
   return (
-  <BrowserRouter>
+  <BrowserRouter >
   <Switch>
-  <Route path="/Login"  component={Login} /> 
+  
+  <Route  path="/Login"  exact component={Login} /> 
     <Route path="/" exact component={Home} />
     <AuthenticateComponet>
-    <Route path="/Protected" component={Protected} />
+    <Route path="/Dashboard" exact component={Dashboard} />
     </AuthenticateComponet>
   </Switch>
   </BrowserRouter>
