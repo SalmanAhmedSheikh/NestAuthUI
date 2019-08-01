@@ -2,6 +2,8 @@ import React, { Component } from 'react';
 import axios from 'axios';
 import { withRouter } from 'react-router-dom'
 
+
+
 class AuthenticateComponet extends Component {
     constructor(props) {
         super(props);
@@ -43,7 +45,10 @@ class AuthenticateComponet extends Component {
 
 
     render() {
+
+var myuser=this.state;
          console.log('In render');
+         console.log('myuser',myuser);
         // console.log('this.state',this.state);
 
         // console.log('this.state.user',this.state.user);
@@ -51,9 +56,20 @@ class AuthenticateComponet extends Component {
         if (this.state.user === undefined) {
             return (<div><h1>Loading.....</h1></div>);
         }
+        else
+        {
+
+            myuser=  `${this.state.user.username}`;
+            console.log('myuser',myuser);
+        }
+        
+    
         return (
-            <div>
-                {this.props.children}
+            <div >    
+
+           {/* {this.state.user.username} */}
+                {this.props.children } 
+                
             </div>
         )
 

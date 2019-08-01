@@ -4,6 +4,7 @@ import Home from './Home';
 import AuthenticateComponet from './AuthenticateComponent';
 import Login from './login';
 import Dashboard from './Dashboard';
+import { tsPropertySignature } from '@babel/types';
 
 function App() {
   return (
@@ -13,7 +14,7 @@ function App() {
   <Route  path="/Login"  exact component={Login} /> 
     <Route path="/" exact component={Home} />
     <AuthenticateComponet>
-    <Route path="/Dashboard" exact component={Dashboard} />
+    <Route path="/Dashboard" exact component={Dashboard}  />
     </AuthenticateComponet>
   </Switch>
   </BrowserRouter>

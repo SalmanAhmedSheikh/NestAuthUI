@@ -42,8 +42,12 @@ class Login extends Component {
 
     StoreNTransfer(res) {
         console.log('In Store n Transfer');
+        console.log('Before storing token',this.state.username);
+        
         localStorage.setItem('cool-jwt', res.data.accessToken);
         this.props.history.push('/Dashboard');
+
+        
     }
 
     render() {
