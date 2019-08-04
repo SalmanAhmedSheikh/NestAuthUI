@@ -1,13 +1,5 @@
 import React from 'react';
 import axios from 'axios';
-import fs from 'fs';
-//var fs = require("fs");
-
-
-
-
-
-
 
 export default class Dashboard extends React.Component {
 
@@ -19,7 +11,8 @@ export default class Dashboard extends React.Component {
             user: null,
             username: '',
             userimage: '',
-            imagefile: ''
+            imagefile: '',
+            uploadError: ''
 
 
         }
@@ -30,44 +23,79 @@ export default class Dashboard extends React.Component {
 
     }
     handleFile(e) {
-        console.log('In Handle file');
-        console.log(e.target.files, "$$$$");
-        console.log(e.target.files[0], "$$$$");
+        console.log("In handle file");
 
         let file = e.target.files[0];
-        this.setState({ imagefile: file });
+        this.setState({
+            imagefile: file,
+            uploadError: ""
+        });
     }
 
 
 
     handleUpload(e) {
-        
 
-        // console.log('In Component did Mount');
-        const jwt = localStorage.getItem('cool-jwt');
+        if (this.Validate()) {
+            // console.log('In Component did Mount');
+            const jwt = localStorage.getItem('cool-jwt');
 
 
-        console.log('In Handle Upload');
-        var formData = new FormData();
-        var imagefile = this.state.imagefile;
+            console.log('In Handle Upload');
+            var formData = new FormData();
+            var imagefile = this.state.imagefile;
 
-        console.log('imageFile', imagefile);
-        formData.append("file", imagefile);
-        formData.append("name", this.state.username);
+            console.log('imageFile', imagefile);
+            formData.append("file", imagefile);
+            formData.append("name", this.state.username);
 
-        console.log('formData',formData);
-        axios.post('http://localhost:5000/auth/upload',formData, {
-             headers: {
-                "content-type": "multipart/form-data;"
-            //     'Content-Type': ''
-                 ,authorization: `bearer ${jwt}`
-             }
-        }).then(
-            res => console.log('Response of upload image', res)
-        ).catch(e => console.log('ERROR in file uploading', e));
+            console.log('formData', formData);
+            axios.post('http://localhost:5000/auth/upload', formData, {
+                headers: {
+                    "content-type": "multipart/form-data;"
+                    //     'Content-Type': ''
+                    , authorization: `bearer ${jwt}`
+                }
+            }).then(
+                (res) => {
+                    console.log('Response of upload image', res);
 
-   
-   
+
+                    this.setState({ userimage: '' });
+                    this.setState({ userimage: "http://localhost:5000/auth/getProfilePic/" + this.state.username, });
+
+                    var FileUploader = document.getElementById("fileUploader");
+                    FileUploader.value = '';
+
+
+                }
+            ).catch(e => console.log('ERROR in file uploading', e));
+
+        }
+
+    }
+    Validate = () => {
+
+        if (this.state.imagefile == '') {
+            this.setState({
+                uploadError: "Please select photo"
+
+            });
+            return false;
+        }
+        var fileName = this.state.imagefile.name,
+            idxDot = fileName.lastIndexOf(".") + 1,
+            extFile = fileName.substr(idxDot, fileName.length).toLowerCase();
+        if (extFile == "jpg" || extFile == "jpeg") {
+            return true;
+        } else {
+            this.setState({
+                uploadError: "Please select photo in jpeg/jpeg format"
+
+            });
+            return false;
+        }
+
     }
 
     componentDidMount() {
@@ -93,6 +121,10 @@ export default class Dashboard extends React.Component {
 
                         this.setState({ username: this.state.user.username });
 
+                        this.setState({ userimage: "http://localhost:5000/auth/getProfilePic/" + this.state.username, });
+
+
+
                     })
                 .catch((err) => {
                     console.log('err', err);
@@ -100,114 +132,27 @@ export default class Dashboard extends React.Component {
                     this.props.history.push('/login');
                 });
         }
-
-
-        this.getUserImage();
-
     }
 
-    arrayBufferToBase64(buffer) {
-
-
-        var fs = require('fs');
-        fs.writeFile('thumbnail.jpeg', { buffer }, 'binary',
-            function (err) {
-                if (err) throw err;
-                console.log('File saved.')
-            });
-
-
-
-    };
-    getUserImage() {
-        // console.log('In Component did Mount');
-        const jwt = localStorage.getItem('cool-jwt');
-        var base64Flag = null;
-        var imageStr = null;
-
-        // console.log('jwt is here',jwt);
-
-        if (!jwt) {
-            console.log('I am in !jwt');
-            this.props.history.push('/login');
-
-        }
-
-        axios.post('http://localhost:5000/auth/GetUserPhoto', {}, { headers: { 'authorization': `bearer ${jwt}` } })
-            .then(
-                (res) => {
-
-
-                    console.log('ACTUAL PIC DATA', res.data);
-                    // this.setState({ userimage: `data:image/jpeg;base64,${data}` });
-                    var fs = require('browserify-fs');
-                    // string generated by canvas.toDataURL()
-                    var img = res.data;
-                    // strip off the data: url prefix to get just the base64-encoded bytes
-                    //  var data = img.replace(/^data:image\/\w+;base64,/, "");
-                    // data=data+'data:image/jpeg;base64,';
-                    // console.log('data',data);
-                    // var buf = new Buffer(data, 'base64');
-                    var path = "/image.jpg";
-
-                    // this.setState({
-                    //     userimage: data
-
-                    // });
-
-
-
-                    console.log('__dirname', __dirname);
-                    fs.writeFile('/MyPresidents/image.jpeg', res.data, 'base64', function (err) {
-                        if (err) {
-                            return console.log(err);
-                        }
-                        console.log("The file was saved!");
-                    });
-
-
-
-
-
-
-
-
-                })
-            .catch((err) => {
-                console.log('err', err);
-                this.props.history.push('/login');
-            });
-
-        ///////
-        // var request = require("request");
-        // var options = {
-        // method: 'POST',
-        //     url: 'http://localhost:5000/auth/GetUserPhoto',
-        //     headers:  { 'authorization': `bearer ${jwt}` },
-        //     form: {}
-        // };
-        // request(options, function (error, response, body) {
-        //     if (error)
-        //         throw new Error(error);
-        //   console.log(body);
-
-        //   this.setState({userimage:response.body});
-        // });
-    }
 
     render() {
 
+
+        console.log("In render() state is ", this.state);
         console.log('Prop ', this.props);
 
 
         return (<div>
 
 
-            <img src={"http://localhost:5000/auth/getProfilePic/" + this.state.username}></img>
+            <img src={this.state.userimage} ></img>
+
             <p>In a Dashboard {this.props.myuser} </p>
             <p>User is {this.state.username} </p>
 
-            <input name="file" onChange={e => this.handleFile(e)} type="file"></input>
+            <div style={{ fontSize: "12", color: "red" }}>{this.state.uploadError}</div>
+
+            <input name="file" id="fileUploader" onChange={e => this.handleFile(e)} type="file" accept="image/jpg" ></input>
 
             <button type="button" onClick={e => this.handleUpload(e)} ></button>
 
@@ -215,5 +160,8 @@ export default class Dashboard extends React.Component {
         </div>)
 
     }
+
+
+
 }
 
