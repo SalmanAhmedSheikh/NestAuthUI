@@ -4,7 +4,7 @@ import Home from './Home';
 import AuthenticateComponet from './AuthenticateComponent';
 import Login from './login';
 import Dashboard from './Dashboard';
-import { tsPropertySignature } from '@babel/types';
+import test from './test';
 
 function App() {
   return (
@@ -12,6 +12,7 @@ function App() {
   <Switch>
   
   <Route  path="/Login"  exact component={Login} /> 
+  <Route path="/test" component={test} ></Route>
     <Route path="/" exact component={Home} />
     <AuthenticateComponet>
     <Route path="/Dashboard" exact component={Dashboard}  />

@@ -8,7 +8,8 @@ class Login extends Component {
 
         this.state = {
             username: '',
-            password: ''
+            password: '',
+            signInError: ''
 
         }
 
@@ -29,12 +30,22 @@ class Login extends Component {
         // eslint-disable-next-line no-unused-expressions
         e.preventDefault();
 
-         console.log('In Submit');
+        console.log('In Submit');
         axios.post('http://localhost:5000/auth/signIn', { username: this.state.username, password: this.state.password }).then(res => {
 
-         
+
             this.StoreNTransfer(res);
+
+        }).catch((e) => {
        
+            console.log('error',e);
+            
+
+          
+                this.setState({ signInError: 'Unable to SignIn!! Please verify your credentials ' });
+       
+       
+          
         });
 
     }
@@ -42,22 +53,43 @@ class Login extends Component {
 
     StoreNTransfer(res) {
         console.log('In Store n Transfer');
-        console.log('Before storing token',this.state.username);
-        
+        console.log('Before storing token', this.state.username);
+
         localStorage.setItem('cool-jwt', res.data.accessToken);
         this.props.history.push('/Dashboard');
 
-        
+
     }
 
     render() {
 
         return (<div>
             <form onSubmit={e => this.submit(e)}>
-                <label>username</label>
-                <input type="text" name="username" onChange={e => this.Change(e)} value={this.state.usename} ></input>
-                <label>password</label><input type="password" name="password" onChange={e => this.Change(e)} value={this.state.password} ></input>
-                <button type="submit">Submit</button>
+                <table>
+                    <tr>
+                        <td colSpan="2">
+                       <div style={{ fontSize: "12", color: "red" }}>
+                        {this.state.signInError} </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>            <label>username</label>
+                        </td>
+                        <td><input type="text" name="username" onChange={e => this.Change(e)} value={this.state.usename} ></input>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>            <label>password</label></td>
+                        <td> <input type="password" name="password" onChange={e => this.Change(e)} value={this.state.password} ></input>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td align="right" >
+                           
+                        </td>
+                        <td> <button value="Sign In"  type="submit">Sign In</button></td>
+                    </tr>
+                </table>
             </form>
         </div>);
     }

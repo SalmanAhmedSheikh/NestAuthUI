@@ -90,7 +90,7 @@ export default class Dashboard extends React.Component {
             return true;
         } else {
             this.setState({
-                uploadError: "Please select photo in jpeg/jpeg format"
+                uploadError: "Please select photo in jpg format"
 
             });
             return false;
@@ -144,17 +144,31 @@ export default class Dashboard extends React.Component {
 
         return (<div>
 
+            <table>
+                <tr>
+                    <td>
+                        Hello {this.state.username}
+                    </td>
+                    <td>
 
-            <img src={this.state.userimage} ></img>
+                        <img src={this.state.userimage} width="200px" height="300px" ></img>
+                    </td>
+                </tr>
+                <tr>
+                    <td colSpan="2">   <div style={{ fontSize: "12", color: "red" }}>{this.state.uploadError}</div>
+                    </td>
 
-            <p>In a Dashboard {this.props.myuser} </p>
-            <p>User is {this.state.username} </p>
+                </tr>
+                <tr>
+                    <td>        <input name="file" id="fileUploader" onChange={e => this.handleFile(e)} type="file" accept="image/jpg" ></input>
+                    </td>
+                    <td>        <button type="button" onClick={e => this.handleUpload(e)} >Upload photo</button>
+                    </td>
+                </tr>
+            </table>
 
-            <div style={{ fontSize: "12", color: "red" }}>{this.state.uploadError}</div>
 
-            <input name="file" id="fileUploader" onChange={e => this.handleFile(e)} type="file" accept="image/jpg" ></input>
 
-            <button type="button" onClick={e => this.handleUpload(e)} ></button>
 
 
         </div>)
